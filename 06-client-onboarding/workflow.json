@@ -1,0 +1,464 @@
+{
+  "name": "Dental Client Onboarding (form to setup)",
+  "nodes": [
+    {
+      "id": "146ec33c-9679-43e2-aa7d-51fc43692b12",
+      "name": "Client Onboarding Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "formTitle": "AI Front Desk: clinic setup",
+        "formDescription": "Thank you for choosing an AI front desk. This takes about 5 minutes. Your answers are used only to set up your agent.<br><br>Please do not include any patient information or passwords.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Clinic name",
+              "fieldType": "text",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Your name",
+              "fieldType": "text",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Work email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Country",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "United Kingdom"
+                  },
+                  {
+                    "option": "Pakistan"
+                  },
+                  {
+                    "option": "UAE"
+                  },
+                  {
+                    "option": "Saudi Arabia"
+                  },
+                  {
+                    "option": "Other"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Clinic website",
+              "fieldType": "text",
+              "placeholder": "https://"
+            },
+            {
+              "fieldLabel": "Package",
+              "fieldType": "dropdown",
+              "requiredField": true,
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "FAQ Front Desk"
+                  },
+                  {
+                    "option": "Booking Agent"
+                  },
+                  {
+                    "option": "Full AI Front Desk"
+                  },
+                  {
+                    "option": "Custom"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Booking system or calendar",
+              "fieldType": "text",
+              "requiredField": true,
+              "placeholder": "Google Calendar, Dentally, Software of Excellence, paper diary..."
+            },
+            {
+              "fieldLabel": "Where should the AI talk to patients?",
+              "fieldType": "checkbox",
+              "requiredField": true,
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Website chat"
+                  },
+                  {
+                    "option": "WhatsApp"
+                  },
+                  {
+                    "option": "Both"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "WhatsApp Business number",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "We already use the WhatsApp Business API"
+                  },
+                  {
+                    "option": "We use the WhatsApp Business app only"
+                  },
+                  {
+                    "option": "We need help setting it up"
+                  },
+                  {
+                    "option": "Not using WhatsApp"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Opening hours",
+              "fieldType": "textarea",
+              "requiredField": true,
+              "placeholder": "Mon-Fri 9am-5:30pm, Sat 9am-1pm..."
+            },
+            {
+              "fieldLabel": "Treatments and prices",
+              "fieldType": "textarea",
+              "requiredField": true,
+              "placeholder": "Check-up GBP 55 (30 min), Hygienist GBP 70 (30 min)..."
+            },
+            {
+              "fieldLabel": "Top questions patients ask",
+              "fieldType": "textarea",
+              "placeholder": "Parking? Do you take NHS patients? Payment plans?"
+            },
+            {
+              "fieldLabel": "Emergency and urgent rules",
+              "fieldType": "textarea",
+              "requiredField": true,
+              "placeholder": "What should happen with pain, swelling or bleeding? Same-day slots? Who calls back?"
+            },
+            {
+              "fieldLabel": "Who gets urgent handovers? (email)",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Preferred go-live date",
+              "fieldType": "date"
+            },
+            {
+              "fieldLabel": "Confirm",
+              "fieldType": "checkbox",
+              "requiredField": true,
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "I have not included any patient information in this form, and I will never share passwords here."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "responseMode": "onReceived",
+        "options": {
+          "appendAttribution": false,
+          "path": "dental-client-onboarding",
+          "buttonLabel": "Send setup details",
+          "respondWithOptions": {
+            "values": {
+              "respondWith": "text",
+              "formSubmittedText": "Thank you! Ahmad will confirm the next steps by email."
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "284ebc22-440a-4c8a-b745-28012c76053d",
+      "name": "Save Client",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "resource": "row",
+        "operation": "insert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "bE4pO6C1kMXKVJuO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "clinic": "={{ $json['Clinic name'] }}",
+            "contact": "={{ $json['Your name'] }}",
+            "email": "={{ $json['Work email'] }}",
+            "country": "={{ $json['Country'] }}",
+            "website": "={{ $json['Clinic website'] }}",
+            "package": "={{ $json['Package'] }}",
+            "booking_system": "={{ $json['Booking system or calendar'] }}",
+            "channels": "={{ [].concat($json['Where should the AI talk to patients?'] || []).join(', ') }}",
+            "whatsapp_status": "={{ $json['WhatsApp Business number'] }}",
+            "hours": "={{ $json['Opening hours'] }}",
+            "treatments_prices": "={{ $json['Treatments and prices'] }}",
+            "faqs": "={{ $json['Top questions patients ask'] }}",
+            "emergency_rules": "={{ $json['Emergency and urgent rules'] }}",
+            "handover_email": "={{ $json['Who gets urgent handovers? (email)'] }}",
+            "go_live": "={{ $json['Preferred go-live date'] }}",
+            "status": "Onboarding started",
+            "created_at": "={{ $now.toISO() }}"
+          },
+          "schema": [
+            {
+              "id": "clinic",
+              "displayName": "clinic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "contact",
+              "displayName": "contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "country",
+              "displayName": "country",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "website",
+              "displayName": "website",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "package",
+              "displayName": "package",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "booking_system",
+              "displayName": "booking_system",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channels",
+              "displayName": "channels",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "whatsapp_status",
+              "displayName": "whatsapp_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hours",
+              "displayName": "hours",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "treatments_prices",
+              "displayName": "treatments_prices",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "faqs",
+              "displayName": "faqs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emergency_rules",
+              "displayName": "emergency_rules",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "handover_email",
+              "displayName": "handover_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "go_live",
+              "displayName": "go_live",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1fa295eb-3525-4149-9f75-dd4132fc0dc7",
+      "name": "Welcome Email Draft",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "=Next steps for your AI front desk: {{ $('Client Onboarding Form').item.json['Clinic name'] }}",
+        "emailType": "text",
+        "message": "=Hi {{ $('Client Onboarding Form').item.json['Your name'] }},\n\nThanks, I have everything I need to start building the AI front desk for {{ $('Client Onboarding Form').item.json['Clinic name'] }}.\n\nWhat happens next:\n1. Within 2 working days: I set up your agent with your hours, treatments, prices and FAQs.\n2. You get a private test link and a short recorded walkthrough. Please try it like a patient would.\n3. You send any changes by email. I update and re-test.\n4. We agree a go-live date, connect your website chat or WhatsApp, and I watch the first week closely.\n\nSafety rules from day one: the AI never gives medical advice, always asks before booking, and sends pain, emergencies and anything unclear to {{ $('Client Onboarding Form').item.json['Who gets urgent handovers? (email)'] }}.\n\nPlease never send passwords or patient information by email. When access to a calendar or WhatsApp account is needed, I will send step-by-step instructions so you can connect it yourself.\n\nAhmad Hassan\nAgentic AI for Dental Clinics",
+        "options": {
+          "sendTo": "={{ $('Client Onboarding Form').item.json['Work email'] }}"
+        }
+      }
+    },
+    {
+      "id": "c5f5c5bf-cdbd-4b19-819f-880adee0e21f",
+      "name": "Tell Ahmad",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "you@example.com",
+        "subject": "=New client setup: {{ $('Client Onboarding Form').item.json['Clinic name'] }}",
+        "emailType": "text",
+        "message": "=New client onboarding form.\n\nClinic: {{ $('Client Onboarding Form').item.json['Clinic name'] }}\nContact: {{ $('Client Onboarding Form').item.json['Your name'] }} ({{ $('Client Onboarding Form').item.json['Work email'] }})\nPackage: {{ $('Client Onboarding Form').item.json['Package'] }}\nBooking system: {{ $('Client Onboarding Form').item.json['Booking system or calendar'] }}\nGo-live: {{ $('Client Onboarding Form').item.json['Preferred go-live date'] || 'not set' }}\n\nAll answers are saved in the dental_clients table. Next: follow the onboarding checklist.",
+        "options": {
+          "appendAttribution": false
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Client Onboarding Form": {
+      "main": [
+        [
+          {
+            "node": "Save Client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Client": {
+      "main": [
+        [
+          {
+            "node": "Welcome Email Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Welcome Email Draft": {
+      "main": [
+        [
+          {
+            "node": "Tell Ahmad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
